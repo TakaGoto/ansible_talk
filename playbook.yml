@@ -1,6 +1,21 @@
 ---
 - hosts: all
+  become: true
 
   tasks:
   - name: Install required system packages
     apt: pkg=git update_cache=yes
+
+  - name: ensure samaritan bitbucket is a known host
+    lineinfile:
+      dest: ".ssh/known_hosts"
+      create: yes
+      state: present
+      line: "{{ lookup('pipe', 'ssh-keyscan -t rsa -p 7999 ssh.samaritanministries.org') }}"
+
+  - name: cloning cfp consumer
+    become: false
+    git: repo=ssh://git@ssh.samaritanministries.org:7999/es/cfp_messaging.git
+         version=master
+         dest=cfp_messaging
+         accept_hostkey=yes
