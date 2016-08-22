@@ -1,0 +1,7 @@
+---
+- hosts: all
+  become: true
+
+  tasks:
+  - name: Install required system packages
+    apt: pkg=git update_cache=yes
